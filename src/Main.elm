@@ -26,7 +26,7 @@ main =
 
 
 type Toast
-    = Red String
+    = Red Prefecture
     | Green
 
 
@@ -49,6 +49,7 @@ type alias GameState =
 
 type alias Prefecture =
     { name : String
+    , kanji : String
     , hiragana : String
     , id : Int
     , status : Status
@@ -194,7 +195,7 @@ update msg model =
                 Task.perform identity <| Task.succeed (AddToast Green)
 
               else
-                Task.perform identity <| Task.succeed (AddToast <| Red currentPrefecture.name)
+                Task.perform identity <| Task.succeed (AddToast <| Red currentPrefecture)
             )
 
 
@@ -203,7 +204,6 @@ viewToast attributes toast =
     Html.div attributes <|
         case toast.content of
             Red correct ->
-                -- FIXME: add <ruby> hiragana for Kanji names!
                 [ Html.div
                     [ Attr.attribute "role" "alert"
                     , Attr.class "alert alert-error animate-in slide-in-from-top duration-500 animate-out slide-out-to-top mb-2.5"
@@ -222,7 +222,13 @@ viewToast attributes toast =
                             []
                         ]
                     , Html.span [ Attr.class "animate-in fade-in duration-300" ]
-                        [ Html.text <| "Mistake! The prefecture was: " ++ correct ]
+                        [ Html.text <| "Mistake! The prefecture was: " ++ correct.name ++ " ("
+                        , Html.ruby []
+                            [ Html.text correct.kanji
+                            , Html.rt [] [ Html.text correct.hiragana ]
+                            ]
+                        , Html.text ")"
+                        ]
                     ]
                 ]
 
@@ -262,54 +268,53 @@ isPlaying model =
 
 allPrefectures : List Prefecture
 allPrefectures =
-    -- FIXME: add kanji readings too!
-    [ { name = "Hokkaido", hiragana = "ほっかいどう", id = 1, status = NotAsked }
-    , { name = "Aomori", hiragana = "あおもり", id = 2, status = NotAsked }
-    , { name = "Iwate", hiragana = "いわて", id = 3, status = NotAsked }
-    , { name = "Miyagi", hiragana = "みやぎ", id = 4, status = NotAsked }
-    , { name = "Akita", hiragana = "あきた", id = 5, status = NotAsked }
-    , { name = "Yamagata", hiragana = "やまがた", id = 6, status = NotAsked }
-    , { name = "Fukushima", hiragana = "ふくしま", id = 7, status = NotAsked }
-    , { name = "Ibaraki", hiragana = "いばらき", id = 8, status = NotAsked }
-    , { name = "Tochigi", hiragana = "とちぎ", id = 9, status = NotAsked }
-    , { name = "Gunma", hiragana = "ぐんま", id = 10, status = NotAsked }
-    , { name = "Saitama", hiragana = "さいたま", id = 11, status = NotAsked }
-    , { name = "Chiba", hiragana = "ちば", id = 12, status = NotAsked }
-    , { name = "Tokyo", hiragana = "とうきょう", id = 13, status = NotAsked }
-    , { name = "Kanagawa", hiragana = "かながわ", id = 14, status = NotAsked }
-    , { name = "Niigata", hiragana = "にいがた", id = 15, status = NotAsked }
-    , { name = "Toyama", hiragana = "とやま", id = 16, status = NotAsked }
-    , { name = "Ishikawa", hiragana = "いしかわ", id = 17, status = NotAsked }
-    , { name = "Fukui", hiragana = "ふくい", id = 18, status = NotAsked }
-    , { name = "Yamanashi", hiragana = "やまなし", id = 19, status = NotAsked }
-    , { name = "Nagano", hiragana = "ながの", id = 20, status = NotAsked }
-    , { name = "Gifu", hiragana = "ぎふ", id = 21, status = NotAsked }
-    , { name = "Shizuoka", hiragana = "しずおか", id = 22, status = NotAsked }
-    , { name = "Aichi", hiragana = "あいち", id = 23, status = NotAsked }
-    , { name = "Mie", hiragana = "みえ", id = 24, status = NotAsked }
-    , { name = "Shiga", hiragana = "しが", id = 25, status = NotAsked }
-    , { name = "Kyoto", hiragana = "きょうと", id = 26, status = NotAsked }
-    , { name = "Osaka", hiragana = "おおさか", id = 27, status = NotAsked }
-    , { name = "Hyogo", hiragana = "ひょうご", id = 28, status = NotAsked }
-    , { name = "Nara", hiragana = "なら", id = 29, status = NotAsked }
-    , { name = "Wakayama", hiragana = "わかやま", id = 30, status = NotAsked }
-    , { name = "Tottori", hiragana = "とっとり", id = 31, status = NotAsked }
-    , { name = "Shimane", hiragana = "しまね", id = 32, status = NotAsked }
-    , { name = "Okayama", hiragana = "おかやま", id = 33, status = NotAsked }
-    , { name = "Hiroshima", hiragana = "ひろしま", id = 34, status = NotAsked }
-    , { name = "Yamaguchi", hiragana = "やまぐち", id = 35, status = NotAsked }
-    , { name = "Tokushima", hiragana = "とくしま", id = 36, status = NotAsked }
-    , { name = "Kagawa", hiragana = "かがわ", id = 37, status = NotAsked }
-    , { name = "Ehime", hiragana = "えひめ", id = 38, status = NotAsked }
-    , { name = "Kochi", hiragana = "こうち", id = 39, status = NotAsked }
-    , { name = "Fukuoka", hiragana = "ふくおか", id = 40, status = NotAsked }
-    , { name = "Saga", hiragana = "さが", id = 41, status = NotAsked }
-    , { name = "Nagasaki", hiragana = "ながさき", id = 42, status = NotAsked }
-    , { name = "Kumamoto", hiragana = "くまもと", id = 43, status = NotAsked }
-    , { name = "Oita", hiragana = "おおいた", id = 44, status = NotAsked }
-    , { name = "Miyazaki", hiragana = "みやざき", id = 45, status = NotAsked }
-    , { name = "Kagoshima", hiragana = "かごしま", id = 46, status = NotAsked }
-    , { name = "Okinawa", hiragana = "おきなわ", id = 47, status = NotAsked }
+    [ { name = "Hokkaido", kanji = "北海道", hiragana = "ほっかいどう", id = 1, status = NotAsked }
+    , { name = "Aomori", kanji = "青森県", hiragana = "あおもりけん", id = 2, status = NotAsked }
+    , { name = "Iwate", kanji = "岩手県", hiragana = "いわてけん", id = 3, status = NotAsked }
+    , { name = "Miyagi", kanji = "宮城県", hiragana = "みやぎけん", id = 4, status = NotAsked }
+    , { name = "Akita", kanji = "秋田県", hiragana = "あきたけん", id = 5, status = NotAsked }
+    , { name = "Yamagata", kanji = "山形県", hiragana = "やまがたけん", id = 6, status = NotAsked }
+    , { name = "Fukushima", kanji = "福島県", hiragana = "ふくしまけん", id = 7, status = NotAsked }
+    , { name = "Ibaraki", kanji = "茨城県", hiragana = "いばらきけん", id = 8, status = NotAsked }
+    , { name = "Tochigi", kanji = "栃木県", hiragana = "とちぎけん", id = 9, status = NotAsked }
+    , { name = "Gunma", kanji = "群馬県", hiragana = "ぐんまけん", id = 10, status = NotAsked }
+    , { name = "Saitama", kanji = "埼玉県", hiragana = "さいたまけん", id = 11, status = NotAsked }
+    , { name = "Chiba", kanji = "千葉県", hiragana = "ちばけん", id = 12, status = NotAsked }
+    , { name = "Tokyo", kanji = "東京都", hiragana = "とうきょうと", id = 13, status = NotAsked }
+    , { name = "Kanagawa", kanji = "神奈川県", hiragana = "かながわけん", id = 14, status = NotAsked }
+    , { name = "Niigata", kanji = "新潟県", hiragana = "にいがたけん", id = 15, status = NotAsked }
+    , { name = "Toyama", kanji = "富山県", hiragana = "とやまけん", id = 16, status = NotAsked }
+    , { name = "Ishikawa", kanji = "石川県", hiragana = "いしかわけん", id = 17, status = NotAsked }
+    , { name = "Fukui", kanji = "福井県", hiragana = "ふくいけん", id = 18, status = NotAsked }
+    , { name = "Yamanashi", kanji = "山梨県", hiragana = "やまなしけん", id = 19, status = NotAsked }
+    , { name = "Nagano", kanji = "長野県", hiragana = "ながのけん", id = 20, status = NotAsked }
+    , { name = "Gifu", kanji = "岐阜県", hiragana = "ぎふけん", id = 21, status = NotAsked }
+    , { name = "Shizuoka", kanji = "静岡県", hiragana = "しずおかけん", id = 22, status = NotAsked }
+    , { name = "Aichi", kanji = "愛知県", hiragana = "あいちけん", id = 23, status = NotAsked }
+    , { name = "Mie", kanji = "三重県", hiragana = "みえけん", id = 24, status = NotAsked }
+    , { name = "Shiga", kanji = "滋賀県", hiragana = "しがけん", id = 25, status = NotAsked }
+    , { name = "Kyoto", kanji = "京都府", hiragana = "きょうとふ", id = 26, status = NotAsked }
+    , { name = "Osaka", kanji = "大阪府", hiragana = "おおさかふ", id = 27, status = NotAsked }
+    , { name = "Hyogo", kanji = "兵庫県", hiragana = "ひょうごけん", id = 28, status = NotAsked }
+    , { name = "Nara", kanji = "奈良県", hiragana = "ならけん", id = 29, status = NotAsked }
+    , { name = "Wakayama", kanji = "和歌山県", hiragana = "わかやまけん", id = 30, status = NotAsked }
+    , { name = "Tottori", kanji = "鳥取県", hiragana = "とっとりけん", id = 31, status = NotAsked }
+    , { name = "Shimane", kanji = "島根県", hiragana = "しまねけん", id = 32, status = NotAsked }
+    , { name = "Okayama", kanji = "岡山県", hiragana = "おかやまけん", id = 33, status = NotAsked }
+    , { name = "Hiroshima", kanji = "広島県", hiragana = "ひろしまけん", id = 34, status = NotAsked }
+    , { name = "Yamaguchi", kanji = "山口県", hiragana = "やまぐちけん", id = 35, status = NotAsked }
+    , { name = "Tokushima", kanji = "徳島県", hiragana = "とくしまけん", id = 36, status = NotAsked }
+    , { name = "Kagawa", kanji = "香川県", hiragana = "かがわけん", id = 37, status = NotAsked }
+    , { name = "Ehime", kanji = "愛媛県", hiragana = "えひめけん", id = 38, status = NotAsked }
+    , { name = "Kochi", kanji = "高知県", hiragana = "こうちけん", id = 39, status = NotAsked }
+    , { name = "Fukuoka", kanji = "福岡県", hiragana = "ふくおかけん", id = 40, status = NotAsked }
+    , { name = "Saga", kanji = "佐賀県", hiragana = "さがけん", id = 41, status = NotAsked }
+    , { name = "Nagasaki", kanji = "長崎県", hiragana = "ながさきけん", id = 42, status = NotAsked }
+    , { name = "Kumamoto", kanji = "熊本県", hiragana = "くまもとけん", id = 43, status = NotAsked }
+    , { name = "Oita", kanji = "大分県", hiragana = "おおいたけん", id = 44, status = NotAsked }
+    , { name = "Miyazaki", kanji = "宮崎県", hiragana = "みやざきけん", id = 45, status = NotAsked }
+    , { name = "Kagoshima", kanji = "鹿児島県", hiragana = "かごしまけん", id = 46, status = NotAsked }
+    , { name = "Okinawa", kanji = "沖縄県", hiragana = "おきなわけん", id = 47, status = NotAsked }
     ]
 
 

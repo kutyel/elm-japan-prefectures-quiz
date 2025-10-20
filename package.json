@@ -1,7 +1,7 @@
 {
-  "name": "elm-parcel-template",
+  "name": "elm-japan-prefectures-quiz",
   "version": "1.0.0",
-  "description": "",
+  "description": "A game to learn all Japan prefectures built with Elm.",
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html",
@@ -10,7 +10,7 @@
     "review": "elm-review",
     "format": "elm-format --yes ./src/*.elm"
   },
-  "keywords": [],
+  "keywords": ["game", "quiz", "elm", "japan", "web", "prefectures"],
   "author": "Flavio Corpa <flaviocorpa@gmail.com>",
   "license": "MIT",
   "devDependencies": {

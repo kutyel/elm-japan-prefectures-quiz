@@ -1,5 +1,5 @@
 {
-  description = "elm-parcel-template";
+  description = "elm-japan-prefectures-quiz";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";

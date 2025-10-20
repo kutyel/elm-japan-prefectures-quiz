@@ -160,11 +160,17 @@ update msg model =
             let
                 answerWasCorrect : Bool
                 answerWasCorrect =
-                    -- TODO: accept japanese hiragana/kanji too!
                     (String.length (String.trim guess) >= 3)
-                        && String.contains
-                            (String.toLower <| String.trim guess)
-                            (String.toLower currentPrefecture.name)
+                        && (String.contains
+                                (String.toLower <| String.trim guess)
+                                (String.toLower currentPrefecture.name)
+                                || String.contains
+                                    (String.toLower <| String.trim guess)
+                                    (String.toLower currentPrefecture.kanji)
+                                || String.contains
+                                    (String.toLower <| String.trim guess)
+                                    (String.toLower currentPrefecture.hiragana)
+                           )
 
                 updatedGameScore : Score
                 updatedGameScore =

@@ -347,8 +347,8 @@ fillColor currentPrefecture id guessedPrefectures =
 
     else
         guessedPrefectures
-            |> List.find (\p -> p.id == id)
-            |> Maybe.unwrap (statusToColor NotAsked) (\p -> statusToColor p.status)
+            |> List.find (.id >> (==) id)
+            |> Maybe.unwrap (statusToColor NotAsked) (.status >> statusToColor)
 
 
 view : Model -> Html Msg

@@ -90,7 +90,7 @@ addToTray :
     -> Toast
     -> ( m, Cmd Msg )
 addToTray stateFn oldTray content =
-    Toast.expireIn 2000 content
+    Toast.expireIn 3000 content
         |> Toast.add oldTray
         |> (\( tray, cmd ) -> ( stateFn tray, Cmd.map ToastMsg cmd ))
 
@@ -398,7 +398,7 @@ view model =
                         [ Html.div [ Attr.class "sticky top-16 z-40 bg-base-200 pb-2 md:relative md:top-0 md:order-2" ]
                             [ Html.input
                                 [ Attr.type_ "text"
-                                , Attr.placeholder "Type prefecture name..."
+                                , Attr.placeholder "Type prefecture name... (漢字とひらがなもOK!)"
                                 , Attr.class "input input-bordered input-lg w-full text-lg md:text-xl focus:input-primary shadow-lg"
                                 , Attr.autocomplete False
                                 , Attr.autofocus True

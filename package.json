@@ -10,7 +10,14 @@
     "review": "elm-review",
     "format": "elm-format --yes ./src/*.elm"
   },
-  "keywords": ["game", "quiz", "elm", "japan", "web", "prefectures"],
+  "keywords": [
+    "game",
+    "quiz",
+    "elm",
+    "japan",
+    "web",
+    "prefectures"
+  ],
   "author": "Flavio Corpa <flaviocorpa@gmail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -24,6 +31,7 @@
     "tailwindcss": "^4.1.14"
   },
   "dependencies": {
-    "daisyui": "^5.3.7"
+    "daisyui": "^5.3.7",
+    "tailwindcss-animate": "^1.0.7"
   }
 }

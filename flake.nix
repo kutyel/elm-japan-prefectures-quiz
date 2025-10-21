@@ -35,7 +35,6 @@
         # So, exclude files from here unless they're necessary for `elm make` et al.
         minimalElmSrc = toSource [
           (fileset.fileFilter (file: file.hasExt "elm") ./src)
-          ./dist
           ./elm.json
         ];
 

@@ -39,7 +39,7 @@
         ];
 
         testsSrc = toSource [
-          (fileset.difference (fileset.fromSource minimalElmSrc) ./dist)
+          (fileset.fileFilter (file: file.hasExt "elm") ./src)
           (fileset.fileFilter (file: file.hasExt "elm") ./tests)
         ];
 

@@ -41,6 +41,7 @@
         testsSrc = toSource [
           (fileset.fileFilter (file: file.hasExt "elm") ./src)
           (fileset.fileFilter (file: file.hasExt "elm") ./tests)
+          ./elm.json
         ];
 
         reviewSrc = toSource [

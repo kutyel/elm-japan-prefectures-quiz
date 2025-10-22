@@ -14,7 +14,12 @@ in stdenv.mkDerivation {
   installPhase = ''
     ${pkgs.makeDotElmDirectoryCmd {
       elmJson = ../review/elm.json;
-      extraDeps = mainApp.dependencies.direct // mainApp.dependencies.indirect;
+      extraDeps = [
+        mainApp.dependencies.direct
+        mainApp.dependencies.indirect
+        mainApp."test-dependencies".direct
+        mainApp."test-dependencies".indirect
+      ];
     }}
     set -e
     mkdir -p .elm/elm-review/${elmReviewVersion}

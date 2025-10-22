@@ -35,13 +35,13 @@
         # So, exclude files from here unless they're necessary for `elm make` et al.
         minimalElmSrc = toSource [
           (fileset.fileFilter (file: file.hasExt "elm") ./src)
-          ./dist
           ./elm.json
         ];
 
         testsSrc = toSource [
-          (fileset.difference (fileset.fromSource minimalElmSrc) ./dist)
+          (fileset.fileFilter (file: file.hasExt "elm") ./src)
           (fileset.fileFilter (file: file.hasExt "elm") ./tests)
+          ./elm.json
         ];
 
         reviewSrc = toSource [

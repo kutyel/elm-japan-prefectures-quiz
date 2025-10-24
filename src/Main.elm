@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg, main)
+module Main exposing (Model, Msg, Prefecture, Status(..), getPrefectureStatus, main)
 
 import Browser
 import Html exposing (Html)
@@ -226,6 +226,7 @@ viewToast attributes toast =
                 [ Html.div
                     [ Attr.attribute "role" "alert"
                     , Attr.class "alert alert-error animate-in slide-in-from-top duration-500 animate-out slide-out-to-top mb-2.5"
+                    , Events.onClick <| ToastMsg <| Toast.exit toast.id
                     ]
                     [ Svg.svg
                         [ SvgAttr.class "h-6 w-6 shrink-0 stroke-current animate-pulse"
@@ -254,7 +255,8 @@ viewToast attributes toast =
             Green ->
                 [ Html.div
                     [ Attr.attribute "role" "alert"
-                    , Attr.class "alert alert-success animate-in slide-in-from-top duration-500 animate-out slide-out-to-top  mb-2.5"
+                    , Attr.class "alert alert-success animate-in slide-in-from-top duration-500 animate-out slide-out-to-top mb-2.5"
+                    , Events.onClick <| ToastMsg <| Toast.exit toast.id
                     ]
                     [ Svg.svg
                         [ SvgAttr.class "h-6 w-6 shrink-0 stroke-current animate-bounce"
@@ -337,34 +339,36 @@ allPrefectures =
     ]
 
 
-statusToColor : Status -> Svg.Attribute msg
+statusToColor : Status -> List (Svg.Attribute msg)
 statusToColor status =
     case status of
         NotAsked ->
-            SvgAttr.fill "#808080"
+            [ SvgAttr.fill "#808080" ]
 
         Accent ->
-            SvgAttr.fill "#422ad5"
+            [ SvgAttr.fill "#422ad5", SvgAttr.class "animate-pulse" ]
 
         Failed ->
-            SvgAttr.fill "#ff627d"
+            [ SvgAttr.fill "#ff627d" ]
 
         Correct ->
-            SvgAttr.fill "#00d391"
+            [ SvgAttr.fill "#00d391" ]
 
 
 fillColor : Int -> Zipper Prefecture -> List (Svg.Attribute msg)
-fillColor id zipper =
+fillColor id =
+    getPrefectureStatus id >> statusToColor
+
+
+getPrefectureStatus : Int -> Zipper Prefecture -> Status
+getPrefectureStatus id zipper =
     if (Zipper.current zipper).id == id then
-        [ statusToColor Accent
-        , SvgAttr.class "animate-pulse"
-        ]
+        Accent
 
     else
         Zipper.before zipper
             |> List.find (.id >> (==) id)
-            |> Maybe.unwrap (statusToColor NotAsked) (.status >> statusToColor)
-            |> List.singleton
+            |> Maybe.unwrap NotAsked .status
 
 
 view : Model -> Html Msg

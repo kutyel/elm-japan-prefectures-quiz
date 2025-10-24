@@ -24,15 +24,15 @@ iwate =
 all : Test
 all =
     describe "getPrefectureStatus tests"
-        [ test "current country is focused -> color Accent" <|
+        [ test "current country is focused -> Focused" <|
             \_ ->
                 let
                     zipper : Zipper Prefecture
                     zipper =
                         Zipper.singleton aomori
                 in
-                Expect.equal Accent (getPrefectureStatus 2 zipper)
-        , test "country not yet asked -> color NotAsked" <|
+                Expect.equal Focused (getPrefectureStatus 2 zipper)
+        , test "country not yet asked -> NotAsked" <|
             \_ ->
                 let
                     zipper : Zipper Prefecture
@@ -40,7 +40,7 @@ all =
                         Zipper.singleton aomori
                 in
                 Expect.equal NotAsked (getPrefectureStatus 1 zipper)
-        , test "country asked and answered correctly -> color Green" <|
+        , test "country asked and answered correctly -> Correct" <|
             \_ ->
                 let
                     zipper : Zipper Prefecture
@@ -48,7 +48,7 @@ all =
                         Zipper.from [ hokkaido ] aomori [ iwate ]
                 in
                 Expect.equal Correct (getPrefectureStatus 1 zipper)
-        , test "country asked and answered incorrectly -> Red" <|
+        , test "country asked and answered incorrectly -> Failed" <|
             \_ ->
                 let
                     zipper : Zipper Prefecture

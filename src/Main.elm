@@ -57,7 +57,7 @@ type alias Prefecture =
 
 type Status
     = NotAsked
-    | Accent
+    | Focused
     | Failed
     | Correct
 
@@ -343,7 +343,7 @@ statusToColor status =
         NotAsked ->
             [ SvgAttr.fill "#808080" ]
 
-        Accent ->
+        Focused ->
             [ SvgAttr.fill "#422ad5", SvgAttr.class "animate-pulse" ]
 
         Failed ->
@@ -361,7 +361,7 @@ fillColor id =
 getPrefectureStatus : Int -> Zipper Prefecture -> Status
 getPrefectureStatus id zipper =
     if (Zipper.current zipper).id == id then
-        Accent
+        Focused
 
     else
         Zipper.before zipper

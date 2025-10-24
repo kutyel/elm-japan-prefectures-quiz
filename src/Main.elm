@@ -149,13 +149,11 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        RandomPrefecture score prefectures ->
-            case Zipper.fromList prefectures of
-                Just zipper ->
-                    ( Playing (GameState zipper score "") emptyTray, Cmd.none )
+        RandomPrefecture score (p :: ps) ->
+            ( Playing (GameState (Zipper.fromCons p ps) score "") emptyTray, Cmd.none )
 
-                Nothing ->
-                    ( Finished score emptyTray, Cmd.none )
+        RandomPrefecture score [] ->
+            ( Finished score emptyTray, Cmd.none )
 
         CheckAnswer { prefectures, score, guess } tray ->
             let

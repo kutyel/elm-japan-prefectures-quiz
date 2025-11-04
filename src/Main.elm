@@ -415,6 +415,17 @@ view model =
                     ]
 
                 Playing ({ prefectures, score, guess } as gameState) tray ->
+                    let
+                        addFire : Int -> String
+                        addFire n =
+                            (if n > 2 then
+                                "🔥 "
+
+                             else
+                                ""
+                            )
+                                ++ String.fromInt n
+                    in
                     [ Html.div
                         [ Attr.class "toast toast-top toast-center z-50" ]
                         [ Toast.render viewToast tray (Toast.config ToastMsg) ]
@@ -1055,38 +1066,18 @@ view model =
                             , Html.div [ Attr.class "stat place-items-center py-2" ]
                                 [ Html.div [ Attr.class "stat-title text-xs" ] [ Html.text "Streak" ]
                                 , Html.div
-                                    [ Attr.class <|
-                                        "stat-value text-primary text-xl md:text-4xl transition-all duration-300 "
-                                            ++ (if score.streak > 0 then
-                                                    "animate-pulse scale-110"
-
-                                                else
-                                                    ""
-                                               )
+                                    [ Attr.classList
+                                        [ ( "stat-value text-primary text-xl md:text-4xl transition-all duration-300", True )
+                                        , ( "animate-pulse scale-110", score.streak > 0 )
+                                        ]
                                     ]
-                                    [ Html.text <|
-                                        (if score.streak > 2 then
-                                            "🔥 "
-
-                                         else
-                                            ""
-                                        )
-                                            ++ String.fromInt score.streak
-                                    ]
+                                    [ Html.text <| addFire score.streak ]
                                 ]
                             , Html.div [ Attr.class "stat place-items-center py-2" ]
                                 [ Html.div [ Attr.class "stat-title text-xs" ] [ Html.text "Best" ]
                                 , Html.div
                                     [ Attr.class "stat-value text-secondary text-xl md:text-4xl transition-all duration-500" ]
-                                    [ Html.text <|
-                                        (if score.maxStreak > 2 then
-                                            "🔥 "
-
-                                         else
-                                            ""
-                                        )
-                                            ++ String.fromInt score.maxStreak
-                                    ]
+                                    [ Html.text <| addFire score.maxStreak ]
                                 ]
                             ]
                         ]

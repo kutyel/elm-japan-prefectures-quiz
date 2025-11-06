@@ -12,7 +12,6 @@ import Random exposing (Generator)
 import Random.List exposing (shuffle)
 import Svg
 import Svg.Attributes as SvgAttr
-import Task
 import Toast
 
 
@@ -77,21 +76,9 @@ type Msg
     = Start
     | Restart
     | ToastMsg Toast.Msg
-    | AddToast Toast
     | OnInput GameState
     | CheckAnswer GameState (Toast.Tray Toast)
     | RandomPrefecture Score (List Prefecture)
-
-
-addToTray :
-    (Toast.Tray Toast -> m)
-    -> Toast.Tray Toast
-    -> Toast
-    -> ( m, Cmd Msg )
-addToTray stateFn oldTray content =
-    Toast.expireIn 3000 content
-        |> Toast.add oldTray
-        |> (\( tray, cmd ) -> ( stateFn tray, Cmd.map ToastMsg cmd ))
 
 
 updateTray :
@@ -126,17 +113,6 @@ update msg model =
 
         Restart ->
             ( Idle, Cmd.none )
-
-        AddToast content ->
-            case model of
-                Playing state oldTray ->
-                    addToTray (Playing state) oldTray content
-
-                Finished score oldTray ->
-                    addToTray (Finished score) oldTray content
-
-                _ ->
-                    ( model, Cmd.none )
 
         ToastMsg tmsg ->
             case model of
@@ -200,19 +176,27 @@ update msg model =
                             }
                         )
                         prefectures
+
+                toastContent : Toast
+                toastContent =
+                    if answerWasCorrect then
+                        Green
+
+                    else
+                        Red <| Zipper.current prefectures
+
+                ( newTray, toastCmd ) =
+                    Toast.expireIn 3000 toastContent
+                        |> Toast.add tray
             in
             ( case Zipper.next updatedCurrentPrefecture of
                 Just remainingPrefectures ->
-                    Playing (GameState remainingPrefectures updatedGameScore "") tray
+                    Playing (GameState remainingPrefectures updatedGameScore "") newTray
 
                 Nothing ->
                     -- if there is no Zipper.next, the game is over!
-                    Finished updatedGameScore tray
-            , if answerWasCorrect then
-                Task.perform identity <| Task.succeed (AddToast Green)
-
-              else
-                Task.perform identity <| Task.succeed (AddToast <| Red (Zipper.current prefectures))
+                    Finished updatedGameScore newTray
+            , Cmd.map ToastMsg toastCmd
             )
 
 
